@@ -1,0 +1,301 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#C8372D"><link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png"><style>[hidden]{display:none!important}body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style><title>ilovepharmacology</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: phone-first app shell — header, one scrolling view, bottom tab bar (like a prescription pad with tabs) */
+:root{
+  --paper:#F3F6F9; --card:#FFFFFF; --ink:#14233A; --muted:#5A6B82; --line:#D7DFE8;
+  --rx:#C8372D; --rx-soft:#FBE7E4; --ok:#1F7A4D; --ok-soft:#E1F3E9; --bad:#B42318; --bad-soft:#FDE8E6;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0F1724; --card:#172234; --ink:#E7EDF5; --muted:#9AA9BD; --line:#26344A;
+  --rx:#F0675B; --rx-soft:#3A1E1E; --ok:#5CCB8F; --ok-soft:#163626; --bad:#F2857A; --bad-soft:#3A1E1E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0F1724; --card:#172234; --ink:#E7EDF5; --muted:#9AA9BD; --line:#26344A;
+  --rx:#F0675B; --rx-soft:#3A1E1E; --ok:#5CCB8F; --ok-soft:#163626; --bad:#F2857A; --bad-soft:#3A1E1E; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--card)}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;gap:10px;padding-block:12px}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--rx);color:#fff;display:grid;place-items:center;font:800 15px var(--f-display);flex:none}
+.brand{font:800 19px/1.1 var(--f-display);letter-spacing:-.01em}
+.brand small{display:block;font:500 11px var(--f-mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+main{padding-block:18px 110px}
+h1{font:800 26px/1.15 var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font:600 13px var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0}
+p{margin:0}
+.stack{display:flex;flex-direction:column;gap:14px}
+.label{font:500 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+/* Rx card */
+.rx{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.rx-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 16px;border-bottom:1px dashed var(--line)}
+.rx-sym{font:800 30px var(--f-display);color:var(--rx);line-height:1}
+.rx-body{padding:16px;display:flex;flex-direction:column;gap:14px}
+.pill{display:inline-block;font:500 12px var(--f-mono);background:var(--rx-soft);color:var(--rx);padding:3px 9px;border-radius:999px}
+.field p{margin-top:3px}
+.pearl{background:var(--paper);border-radius:10px;padding:12px 14px}
+.nav-days{display:flex;gap:10px}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{flex:1;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:11px 14px;font-weight:700}
+.btn.primary{background:var(--rx);border-color:var(--rx);color:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+:focus-visible{outline:3px solid var(--rx);outline-offset:2px}
+/* Quiz */
+.progress{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--rx);transition:width .25s}
+.q{font:700 19px/1.35 var(--f-body)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:13px 14px;display:flex;gap:12px;align-items:flex-start}
+.opt b{font:500 13px var(--f-mono);color:var(--muted);padding-top:2px}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.explain{border-left:3px solid var(--ok);padding:4px 0 4px 12px;color:var(--ink)}
+.score{font:800 56px/1 var(--f-display);color:var(--rx);font-variant-numeric:tabular-nums}
+/* DOC */
+.search{width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;font:inherit}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.doc-list{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.doc{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:13px 16px;border-top:1px solid var(--line);text-align:left;border-left:0;border-right:0;border-bottom:0;background:none;width:100%}
+.doc:first-child{border-top:0}
+.doc .cond{min-width:0}
+.doc .ans{grid-column:1/-1;font-weight:700;color:var(--rx)}
+.doc .ans.hidden{color:transparent;background:var(--paper);border-radius:6px;user-select:none}
+.doc .sys{font:500 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.note{font-size:13px;color:var(--muted)}
+/* Videos */
+.vid{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-decoration:none;color:inherit}
+.play{width:42px;height:42px;border-radius:50%;background:var(--rx);flex:none;display:grid;place-items:center}
+.play::after{content:"";border-left:13px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px}
+.vid div{min-width:0}
+.vid strong{display:block}
+.vid span{font-size:13px;color:var(--muted)}
+.cta{display:block;text-align:center;text-decoration:none;background:var(--rx);color:#fff;border-radius:12px;padding:13px;font-weight:700}
+.about{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px}
+/* Tab bar */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
+.tab{background:none;border:0;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:12px;font-weight:700}
+.tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tab[aria-current="page"]{color:var(--rx)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head><body>
+<header><div class="wrap">
+  <div class="logo" aria-hidden="true">℞</div>
+  <div class="brand">ilovepharmacology<small>by Dr. Padmanabha T S</small></div>
+</div></header>
+
+<main><div class="wrap" id="view"></div></main>
+
+<nav class="tabs" aria-label="Sections"><div class="wrap">
+  <button class="tab" data-tab="today"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Today</button>
+  <button class="tab" data-tab="quiz"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6M12 17h.01"/></svg>MCQs</button>
+  <button class="tab" data-tab="doc"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="8" rx="4"/><path d="M12 8v8"/></svg>Drug of choice</button>
+  <button class="tab" data-tab="videos"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M10 9l5 3-5 3z"/></svg>Lectures</button>
+</div></nav>
+
+<script>
+const CHANNEL = "https://www.youtube.com/@ilovepharmacology";
+
+/* ---------- CONTENT (edit these lists to add more) ---------- */
+const POTD = [
+ {drug:"Adrenaline", cls:"Sympathomimetic (α + β agonist)", moa:"Stimulates α1 (vasoconstriction), β1 (↑ heart rate and contractility) and β2 (bronchodilation) receptors; also stabilises mast cells.", uses:"Anaphylactic shock (drug of choice), cardiac arrest, with local anaesthetics to prolong action.", adr:"Palpitations, tachyarrhythmia, hypertension, anxiety, tremor.", pearl:"Anaphylaxis dose in adults: 0.5 mg IM (0.5 mL of 1:1000) into the anterolateral thigh; repeat after 5–15 min if needed."},
+ {drug:"Atropine", cls:"Antimuscarinic (anticholinergic)", moa:"Competitive blocker of acetylcholine at muscarinic receptors.", uses:"Organophosphate poisoning, sinus bradycardia, pre-anaesthetic medication to reduce secretions, mydriatic–cycloplegic.", adr:"Dry mouth, tachycardia, urinary retention, blurred vision, hyperthermia (especially in children).", pearl:"In organophosphate poisoning, titrate atropine to drying of bronchial secretions, not to pupil size."},
+ {drug:"Metformin", cls:"Biguanide (oral antidiabetic)", moa:"Activates AMP-kinase → ↓ hepatic gluconeogenesis and ↑ peripheral glucose uptake. Does not release insulin.", uses:"First-line drug for type 2 diabetes mellitus, PCOS.", adr:"GI upset, metallic taste, vitamin B12 deficiency, lactic acidosis (rare).", pearl:"Does not cause hypoglycaemia when used alone and does not cause weight gain."},
+ {drug:"Digoxin", cls:"Cardiac glycoside", moa:"Inhibits Na⁺/K⁺-ATPase → ↑ intracellular Ca²⁺ → ↑ myocardial contractility; also ↑ vagal tone.", uses:"Atrial fibrillation with fast ventricular rate, heart failure with AF.", adr:"Anorexia, nausea, xanthopsia (yellow vision), arrhythmias (bigeminy, AV block).", pearl:"Hypokalaemia increases digoxin toxicity. Narrow therapeutic index; antidote is digoxin-specific Fab fragments."},
+ {drug:"Warfarin", cls:"Oral anticoagulant (coumarin)", moa:"Inhibits vitamin K epoxide reductase → ↓ synthesis of clotting factors II, VII, IX, X.", uses:"DVT, pulmonary embolism, AF and prosthetic valves (prevention of embolism).", adr:"Bleeding, skin necrosis, teratogenic (fetal warfarin syndrome).", pearl:"Monitor with INR. Overdose is reversed with vitamin K1; for urgent reversal add prothrombin complex concentrate or fresh frozen plasma."},
+ {drug:"Salbutamol", cls:"Selective β2 agonist (short-acting)", moa:"β2 stimulation → ↑ cAMP → bronchial smooth muscle relaxation.", uses:"Acute asthma attack (inhaled), COPD, hyperkalaemia (adjunct).", adr:"Tremor, palpitations, tachycardia, hypokalaemia.", pearl:"Inhaled route gives fast action with fewer systemic side effects than the oral route."},
+ {drug:"Paracetamol", cls:"Analgesic–antipyretic", moa:"Inhibits COX mainly in the CNS; weak peripheral anti-inflammatory action.", uses:"Fever, mild to moderate pain.", adr:"Safe in therapeutic doses; overdose causes hepatotoxicity due to the toxic metabolite NAPQI.", pearl:"Antidote is N-acetylcysteine, which replenishes glutathione. Most effective within 8 hours of overdose."}
+];
+
+const MCQS = [
+ {q:"Drug of choice for anaphylactic shock is:", o:["Hydrocortisone IV","Adrenaline IM","Chlorpheniramine IV","Salbutamol inhaler"], a:1, e:"Adrenaline IM (0.5 mg of 1:1000 in adults) reverses bronchospasm, hypotension and oedema. Steroids and antihistamines are only adjuncts."},
+ {q:"Bioavailability of a drug given by the intravenous route is:", o:["50%","75%","100%","Depends on first-pass metabolism"], a:2, e:"The entire IV dose reaches the systemic circulation, so bioavailability is 100% by definition."},
+ {q:"Steady-state plasma concentration is reached after approximately:", o:["1 half-life","2 half-lives","4–5 half-lives","10 half-lives"], a:2, e:"With repeated dosing, about 94–97% of steady state is reached in 4–5 half-lives."},
+ {q:"The loading dose of a drug mainly depends on its:", o:["Clearance","Volume of distribution","Half-life","Protein binding only"], a:1, e:"Loading dose = target concentration × Vd. Maintenance dose depends on clearance."},
+ {q:"Antidote for paracetamol poisoning is:", o:["Naloxone","Flumazenil","N-acetylcysteine","Atropine"], a:2, e:"N-acetylcysteine replenishes glutathione, which detoxifies the toxic metabolite NAPQI."},
+ {q:"Which drug is used for malignant hyperthermia?", o:["Dantrolene","Succinylcholine","Halothane","Neostigmine"], a:0, e:"Dantrolene blocks Ca²⁺ release from the sarcoplasmic reticulum (ryanodine receptor). Halothane and succinylcholine are triggers."},
+ {q:"Digoxin toxicity is increased by:", o:["Hyperkalaemia","Hypokalaemia","Hypocalcaemia","Hypermagnesaemia"], a:1, e:"Digoxin and K⁺ compete for the same site on Na⁺/K⁺-ATPase, so low K⁺ increases digoxin binding and toxicity."},
+ {q:"Specific antidote for heparin overdose is:", o:["Vitamin K1","Protamine sulfate","Tranexamic acid","Desferrioxamine"], a:1, e:"Protamine is strongly basic and combines with acidic heparin to form an inactive complex. Vitamin K1 reverses warfarin."},
+ {q:"A serious but rare adverse effect of metformin is:", o:["Hypoglycaemia","Weight gain","Lactic acidosis","Hypokalaemia"], a:2, e:"Lactic acidosis is rare but serious, mainly in renal impairment. Metformin alone does not cause hypoglycaemia."},
+ {q:"Drug of choice for absence seizures in children is:", o:["Phenytoin","Carbamazepine","Ethosuximide","Phenobarbitone"], a:2, e:"Ethosuximide blocks T-type Ca²⁺ channels in thalamic neurons. Phenytoin and carbamazepine can worsen absence seizures."},
+ {q:"Which drug shows zero-order (saturation) kinetics at high therapeutic doses?", o:["Phenytoin","Paracetamol","Amoxicillin","Atenolol"], a:0, e:"Phenytoin metabolism saturates within the therapeutic range, so a small dose increase can cause a large rise in plasma level."},
+ {q:"Drug of choice for convulsions in eclampsia is:", o:["Diazepam","Phenytoin","Magnesium sulfate","Valproate"], a:2, e:"Magnesium sulfate is superior to diazepam and phenytoin for preventing and treating eclamptic seizures."}
+];
+
+const DOC = [
+ {c:"Anaphylactic shock", d:"Adrenaline (IM)", s:"Emergency"},
+ {c:"Status epilepticus", d:"IV lorazepam (benzodiazepine)", s:"CNS"},
+ {c:"Absence seizures", d:"Ethosuximide (valproate if mixed seizures)", s:"CNS"},
+ {c:"Trigeminal neuralgia", d:"Carbamazepine", s:"CNS"},
+ {c:"Eclampsia (seizures)", d:"Magnesium sulfate", s:"Obstetrics"},
+ {c:"Postpartum haemorrhage (prevention)", d:"Oxytocin", s:"Obstetrics"},
+ {c:"Paroxysmal supraventricular tachycardia", d:"Adenosine (IV)", s:"CVS"},
+ {c:"Malignant hyperthermia", d:"Dantrolene", s:"Anaesthesia"},
+ {c:"Organophosphate poisoning", d:"Atropine (+ pralidoxime)", s:"Antidote"},
+ {c:"Paracetamol poisoning", d:"N-acetylcysteine", s:"Antidote"},
+ {c:"Opioid (morphine) overdose", d:"Naloxone", s:"Antidote"},
+ {c:"Benzodiazepine overdose", d:"Flumazenil", s:"Antidote"},
+ {c:"Heparin overdose", d:"Protamine sulfate", s:"Antidote"},
+ {c:"Warfarin overdose", d:"Vitamin K1 (phytonadione)", s:"Antidote"},
+ {c:"Iron poisoning", d:"Desferrioxamine", s:"Antidote"},
+ {c:"Methanol poisoning", d:"Fomepizole (ethanol if unavailable)", s:"Antidote"},
+ {c:"Syphilis (early)", d:"Benzathine penicillin G", s:"Antimicrobial"},
+ {c:"Type 2 diabetes mellitus (first-line)", d:"Metformin", s:"Endocrine"},
+ {c:"Myxoedema coma", d:"IV levothyroxine", s:"Endocrine"},
+ {c:"Chronic gout (urate lowering)", d:"Allopurinol", s:"Musculoskeletal"}
+];
+
+const VIDEOS = [
+ {t:"Pharmacokinetics", s:"Absorption, distribution, metabolism, excretion", q:"pharmacokinetics"},
+ {t:"Routes of drug administration", s:"Enteral, parenteral, local routes", q:"routes of drug administration"},
+ {t:"Adrenergic receptors", s:"α and β receptors in one Short", q:"adrenergic receptors"},
+ {t:"Cholinergic drugs", s:"Muscarinic and nicotinic actions", q:"cholinergic"},
+ {t:"Drug of choice", s:"High-yield revision for exams", q:"drug of choice"}
+];
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem("ilp:"+k); return v===null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem("ilp:"+k, JSON.stringify(v)); }catch(e){} }
+};
+const dayIndex = () => Math.floor((Date.now() + 5.5*3600e3) / 864e5) % POTD.length;
+
+/* ---------- views ---------- */
+let potdOffset = 0;
+function today(){
+  const i = (dayIndex() + potdOffset + POTD.length*10) % POTD.length;
+  const d = POTD[i];
+  const date = new Date(Date.now() + potdOffset*864e5).toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long"});
+  $("#view").innerHTML = `
+  <div class="stack">
+    <div><h2>Pharmacology of the Day</h2><p class="note" style="margin-top:4px">${esc(date)}</p></div>
+    <article class="rx">
+      <div class="rx-top"><h1>${esc(d.drug)}</h1><span class="rx-sym" aria-hidden="true">℞</span></div>
+      <div class="rx-body">
+        <span class="pill">${esc(d.cls)}</span>
+        <div class="field"><div class="label">Mechanism of action</div><p>${esc(d.moa)}</p></div>
+        <div class="field"><div class="label">Uses</div><p>${esc(d.uses)}</p></div>
+        <div class="field"><div class="label">Adverse effects</div><p>${esc(d.adr)}</p></div>
+        <div class="pearl"><div class="label">Exam pearl</div><p style="margin-top:3px">${esc(d.pearl)}</p></div>
+      </div>
+    </article>
+    <div class="nav-days">
+      <button class="btn" id="prev">Previous day</button>
+      <button class="btn" id="next" ${potdOffset>=0?"disabled":""}>Next day</button>
+    </div>
+  </div>`;
+  $("#prev").onclick = () => { potdOffset--; today(); };
+  $("#next").onclick = () => { if(potdOffset<0){ potdOffset++; today(); } };
+}
+
+let quiz = {i:0, score:0, picked:null};
+function quizView(){
+  const best = store.get("best", null);
+  if(quiz.i >= MCQS.length){
+    const pct = Math.round(quiz.score/MCQS.length*100);
+    if(best===null || quiz.score>best) store.set("best", quiz.score);
+    $("#view").innerHTML = `
+    <div class="stack">
+      <h2>Quiz complete</h2>
+      <div class="rx"><div class="rx-body" style="align-items:flex-start">
+        <div class="score">${quiz.score}/${MCQS.length}</div>
+        <p>${pct>=80?"Excellent. You are exam-ready on these topics.":pct>=50?"Good effort. Review the explanations for the ones you missed.":"Keep going. Watch the lecture videos and try again."}</p>
+        <p class="note">Best score on this device: ${Math.max(best??0, quiz.score)}/${MCQS.length}</p>
+      </div></div>
+      <button class="btn primary" id="again">Try again</button>
+    </div>`;
+    $("#again").onclick = () => { quiz = {i:0, score:0, picked:null}; quizView(); };
+    return;
+  }
+  const m = MCQS[quiz.i], answered = quiz.picked!==null;
+  $("#view").innerHTML = `
+  <div class="stack">
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><h2>Question ${quiz.i+1} of ${MCQS.length}</h2><span class="label">Score ${quiz.score}</span></div>
+    <div class="progress"><i style="width:${(quiz.i/MCQS.length)*100}%"></i></div>
+    <p class="q">${esc(m.q)}</p>
+    <div class="opts">${m.o.map((o,j)=>{
+      let cls = "";
+      if(answered){ if(j===m.a) cls="right"; else if(j===quiz.picked) cls="wrong"; }
+      return `<button class="opt ${cls}" data-j="${j}" ${answered?"disabled":""}><b>${"ABCD"[j]}</b><span>${esc(o)}</span></button>`;
+    }).join("")}</div>
+    ${answered ? `<p class="explain"><strong>${quiz.picked===m.a?"Correct.":"Answer: "+esc(m.o[m.a])+"."}</strong> ${esc(m.e)}</p>
+      <button class="btn primary" id="nextq">${quiz.i===MCQS.length-1?"See score":"Next question"}</button>` : ""}
+  </div>`;
+  document.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    quiz.picked = +b.dataset.j; if(quiz.picked===m.a) quiz.score++; quizView();
+  });
+  if(answered) $("#nextq").onclick = () => { quiz.i++; quiz.picked=null; quizView(); };
+}
+
+let docState = {q:"", sys:"All", hide:false, shown:new Set()};
+function docView(){
+  const systems = ["All", ...new Set(DOC.map(d=>d.s))];
+  $("#view").innerHTML = `
+  <div class="stack">
+    <h2>Drug of choice</h2>
+    <input class="search" id="docq" type="search" placeholder="Search a condition or drug" value="${esc(docState.q)}" aria-label="Search drug of choice">
+    <div class="chips" role="group" aria-label="Filter by system">${systems.map(s=>`<button class="chip" data-s="${esc(s)}" aria-pressed="${docState.sys===s}">${esc(s)}</button>`).join("")}</div>
+    <label style="display:flex;gap:8px;align-items:center;font-weight:700"><input type="checkbox" id="hide" ${docState.hide?"checked":""}> Revision mode: hide answers, tap to reveal</label>
+    <div class="doc-list" id="doclist"></div>
+    <p class="note">Based on standard textbooks and national guidelines. Always check current guidelines before clinical use.</p>
+  </div>`;
+  renderDocList();
+  $("#docq").oninput = e => { docState.q = e.target.value; renderDocList(); };
+  document.querySelectorAll(".chip").forEach(c => c.onclick = () => { docState.sys = c.dataset.s; docView(); });
+  $("#hide").onchange = e => { docState.hide = e.target.checked; docState.shown.clear(); renderDocList(); };
+}
+function renderDocList(){
+  const q = docState.q.trim().toLowerCase();
+  const rows = DOC.map((d,i)=>({...d,i})).filter(d => (docState.sys==="All"||d.s===docState.sys) && (!q || (d.c+" "+d.d).toLowerCase().includes(q)));
+  $("#doclist").innerHTML = rows.length ? rows.map(d => {
+    const hidden = docState.hide && !docState.shown.has(d.i);
+    return `<button class="doc" data-i="${d.i}"><span class="cond">${esc(d.c)}</span><span class="sys">${esc(d.s)}</span><span class="ans ${hidden?"hidden":""}">${esc(d.d)}</span></button>`;
+  }).join("") : `<p style="padding:16px" class="note">No match. Try another word, such as "poisoning" or "seizure".</p>`;
+  document.querySelectorAll(".doc").forEach(b => b.onclick = () => { docState.shown.add(+b.dataset.i); renderDocList(); });
+}
+
+function videosView(){
+  $("#view").innerHTML = `
+  <div class="stack">
+    <h2>Lecture videos</h2>
+    ${VIDEOS.map(v=>`<a class="vid" href="${CHANNEL}/search?query=${encodeURIComponent(v.q)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span><div><strong>${esc(v.t)}</strong><span>${esc(v.s)}</span></div></a>`).join("")}
+    <a class="cta" href="${CHANNEL}" target="_blank" rel="noopener">Open the ilovepharmacology channel</a>
+    <div class="about">
+      <div class="label">About</div>
+      <p><strong>Dr. Padmanabha T S</strong>, MBBS, MD (Pharmacology)</p>
+      <p class="note">Pharmacology for MBBS, nursing, physiotherapy, allied health and medical science students.</p>
+      <p class="note">This app is for education only. It is not a prescribing guide.</p>
+    </div>
+  </div>`;
+}
+
+/* ---------- routing ---------- */
+const VIEWS = {today, quiz:quizView, doc:docView, videos:videosView};
+function go(tab){
+  if(!VIEWS[tab]) tab = "today";
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-current", t.dataset.tab===tab ? "page" : "false"));
+  VIEWS[tab](); window.scrollTo(0,0); store.set("tab", tab);
+}
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => { location.hash = t.dataset.tab; });
+window.addEventListener("hashchange", () => go(location.hash.slice(1)));
+go(location.hash.slice(1) || store.get("tab","today"));
+</script>
+<script>if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");</script>
+</body></html>
